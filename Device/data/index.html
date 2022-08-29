@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Car camera controller</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="topnav">
+    <h1>Remote lock</h1>
+  </div>
+  <div class="content">
+    <div class="card-grid">
+      <div class="card">
+        <p class="card-title">Camera</p>
+        <IMG SRC='http://192.168.1.16/stream' style='max-width:100%;'>
+      </div>
+      <div class="card">
+        <p class="card-title">Unlock door</p>
+        <label class="switch">
+          <input type="checkbox" onchange="toggleCheckbox(this)" id="doorUnlock">
+          <span class="slider"></span>
+        </label>
+        <p class="card-title">Toggle light</p>
+        <label class="switch">
+          <input type="checkbox" onchange="toggleCheckbox(this)" id="lightOn">
+          <span class="slider"></span>
+        </label>
+        <p class="card-title">Commands</p>
+        <button id="0" onClick="runCommand(this)">Reset</button>
+      </div>
+      <div class="card">
+        <p class="card-title">Stats:</p>
+        <p class="state">Wifi: <span id="ssid"></span></p>
+        <p class="state">Version: <span id="softwareVersion"></span></p>
+        <p class="state">Free RAM: <span id="ram"></span></p>
+        <p class="state">Uptime, s: <span id="uptime"></span></p>
+      </div>
+    </div>
+  </div>
+  <script src="/script.js"></script>
+</body>
+
+</html>
