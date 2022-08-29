@@ -6,8 +6,7 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
-#include "FS.h" // SD Card ESP32
-#include "SD_MMC.h"
+#include "SPIFFS.h"
 // Everything else
 #include <Arduino_JSON.h>
 #include <Arduino.h>
@@ -19,8 +18,8 @@
 #include "./libraries/httpcameraserver.h"
 #include "./libraries/camera.h"
 
-#define pinLock 13  // Controls magnetic lock
-#define pinLight 14 // Controls entrance lights
+#define pinLock 14  // Controls magnetic lock
+#define pinLight 15 // Controls entrance lights
 
 const char *ssid = WIFISSID_2;
 const char *password = WIFIPASS_2;
@@ -165,21 +164,13 @@ void initWebSocket()
   server.addHandler(&ws);
 }
 
-void initSDCard()
+void initSPIFFS()
 {
-  Serial.println("Starting SD Card");
-  if (!SD_MMC.begin())
+  if (!SPIFFS.begin(true))
   {
-    Serial.println("SD Card Mount Failed");
-    return;
+    Serial.println("An error has occurred while mounting SPIFFS");
   }
-
-  uint8_t cardType = SD_MMC.cardType();
-  if (cardType == CARD_NONE)
-  {
-    Serial.println("No SD Card attached");
-    return;
-  }
+  Serial.println("SPIFFS mounted successfully");
 }
 
 void setup()
@@ -190,7 +181,7 @@ void setup()
 
   BlinkInit();
   CameraInit();
-  initSDCard();
+  initSPIFFS();
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
@@ -221,9 +212,9 @@ void setup()
   // server.on("/status", HTTP_GET, getCameraStatus);
   //   Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(SD_MMC, "/index.html", "text/html", false); });
+            { request->send(SPIFFS, "/index.html", "text/html", false); });
 
-  server.serveStatic("/", SD_MMC, "/");
+  server.serveStatic("/", SPIFFS, "/");
   // Start server
   server.begin();
   // Pins
