@@ -21,13 +21,15 @@
 #define pinLock 14  // Controls magnetic lock
 #define pinLight 15 // Controls entrance lights
 
+#define lockOpenDuration 10000 // time while the lock is open (in ms)
+
 const char *ssid = WIFISSID_2;
 const char *password = WIFIPASS_2;
 const char *softwareVersion = "0.21";
 
 bool lightOn = false;
 bool doorUnlock = false;
-long lockOpenTime;
+long lockOpenTime = 0;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -226,12 +228,19 @@ void setup()
 void HandleGPIO()
 {
   digitalWrite(pinLock, doorUnlock);
-  digitalWrite(pinLight, lightOn);
+  digitalWrite(pinLight, !lightOn);
 }
 
 void loop()
 {
   HandleGPIO();
   notifyClients(getOutputStates());
+  if (lockOpenTime == 0 && doorUnlock)
+    lockOpenTime = millis();
+  if (lockOpenTime > 0 && doorUnlock && lockOpenTime + lockOpenDuration < millis())
+  {
+    doorUnlock = false;
+    lockOpenTime = 0;
+  }
   delay(1000);
 }
