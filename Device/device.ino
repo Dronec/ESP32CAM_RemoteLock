@@ -137,6 +137,7 @@ String getOutputStates()
 
   // sending stats
   myArray["stats"]["ssid"] = ssid;
+  myArray["stats"]["rssi"] = WiFi.RSSI();
   myArray["stats"]["softwareVersion"] = softwareVersion;
   // myArray["stats"]["reverseGearActive"] = reverseGearActive;
   myArray["stats"]["uptime"] = millisToTime(millis());
